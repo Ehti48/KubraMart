@@ -192,3 +192,15 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
 
 export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
+
+// Define cart item relations
+export const cartItemsRelations = relations(cartItems, ({ one }) => ({
+  user: one(users, {
+    fields: [cartItems.userId],
+    references: [users.id]
+  }),
+  product: one(products, {
+    fields: [cartItems.productId],
+    references: [products.id]
+  })
+}));
