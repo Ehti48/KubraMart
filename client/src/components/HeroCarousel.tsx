@@ -8,7 +8,7 @@ const HeroCarousel = () => {
   const slides = [
     {
       id: 1,
-      image: "/src/lib/modern-stylish-muslim-woman-hijab-denim-jacket-black-abaya-sitting-city-street-working-laptop.jpg",
+      image: "https://i.imghippo.com/files/CaB9254A.jpg",
       title: "Elegant Abayas Collection",
       description: "Discover our new season of Dubai-inspired abayas for every occasion",
       buttonText: "Shop Now",
