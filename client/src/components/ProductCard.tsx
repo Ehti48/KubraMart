@@ -10,8 +10,23 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { addToCart } = useCart();
   const { toast } = useToast();
+  
+  // Use try-catch to handle possible missing CartContext
+  let addToCart = (item: any) => {
+    toast({
+      title: "Cart Not Available",
+      description: "Could not add to cart. Please try again later.",
+      variant: "destructive",
+    });
+  };
+  
+  try {
+    const cartContext = useCart();
+    addToCart = cartContext.addToCart;
+  } catch (error) {
+    console.log("Cart context not available in ProductCard");
+  }
   const [isHovering, setIsHovering] = useState(false);
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -45,12 +60,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <Link href={`/product/${product.slug}`}>
-        <a className="block">
+      <Link href={`/product/${product.slug}`} className="block">
           <div className="relative">
             <img 
-              src={product.image} 
-              alt={product.name} 
+              src={product.image || ''} 
+              alt={product.name || 'Product'} 
               className="w-full h-64 object-cover"
             />
             
@@ -90,12 +104,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <div className="flex items-center mb-2">
               <div className="flex text-warning">
                 {Array.from({ length: 5 }).map((_, i) => {
+                  const rating = product.rating || 0;
                   // Full star
-                  if (i < Math.floor(product.rating)) {
+                  if (i < Math.floor(rating)) {
                     return <i key={i} className="bi bi-star-fill"></i>;
                   }
                   // Half star
-                  else if (i === Math.floor(product.rating) && product.rating % 1 >= 0.5) {
+                  else if (i === Math.floor(rating) && rating % 1 >= 0.5) {
                     return <i key={i} className="bi bi-star-half"></i>;
                   }
                   // Empty star
@@ -104,7 +119,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   }
                 })}
               </div>
-              <span className="text-xs text-gray-500 ml-1">({product.numReviews})</span>
+              <span className="text-xs text-gray-500 ml-1">({product.numReviews || 0})</span>
             </div>
             <div className="flex items-center justify-between">
               <div>
@@ -125,7 +140,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
               </Button>
             </div>
           </div>
-        </a>
       </Link>
     </div>
   );
