@@ -20,6 +20,7 @@ interface CartContextType {
   updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
   isLoading: boolean;
+  isInitialized: boolean;
   cartTotal: number;
 }
 
@@ -43,6 +44,7 @@ interface CartProviderProps {
 export const CartProvider = ({ children }: CartProviderProps) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const { toast } = useToast();
   
   // Default user ID (in a real app, this would come from authentication)
@@ -73,6 +75,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         console.error("Error fetching cart items:", error);
       } finally {
         setIsLoading(false);
+        setIsInitialized(true);
       }
     };
 
@@ -202,6 +205,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         updateQuantity,
         clearCart,
         isLoading,
+        isInitialized,
         cartTotal
       }}
     >
