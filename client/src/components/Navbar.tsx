@@ -10,10 +10,19 @@ import {
 
 const Navbar = () => {
   const [, setLocation] = useLocation();
-  const { cart } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
   
-  const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
+  // Use try-catch to handle possible missing CartContext
+  let cart = [];
+  let cartItemsCount = 0;
+  
+  try {
+    const cartContext = useCart();
+    cart = cartContext.cart;
+    cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
+  } catch (error) {
+    console.log("Cart context not available yet");
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,59 +91,33 @@ const Navbar = () => {
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">
               <div className="py-4 flex flex-col gap-4">
-                <Link href="/">
-                  <a className="text-xl font-poppins font-bold text-primary mb-6">
-                    Kubra<span className="text-secondary">Mart</span>
-                  </a>
+                <Link href="/" className="text-xl font-poppins font-bold text-primary mb-6">
+                  Kubra<span className="text-secondary">Mart</span>
                 </Link>
-                <Link href="/">
-                  <a className="flex items-center gap-2 py-2 hover:text-primary transition-colors">
-                    <i className="bi bi-house"></i> Home
-                  </a>
+                <Link href="/" className="flex items-center gap-2 py-2 hover:text-primary transition-colors">
+                  <i className="bi bi-house"></i> Home
                 </Link>
-                <Link href="/category/all">
-                  <a className="flex items-center gap-2 py-2 hover:text-primary transition-colors">
-                    <i className="bi bi-grid"></i> All Products
-                  </a>
+                <Link href="/category/all" className="flex items-center gap-2 py-2 hover:text-primary transition-colors">
+                  <i className="bi bi-grid"></i> All Products
                 </Link>
                 <div className="py-2">
                   <div className="font-medium mb-2 flex items-center gap-2">
                     <i className="bi bi-list"></i> Categories
                   </div>
                   <div className="pl-8 flex flex-col gap-2">
-                    <Link href="/category/thaibah-enterprises">
-                      <a className="hover:text-primary transition-colors">THAIBAH ENTERPRISES</a>
-                    </Link>
-                    <Link href="/category/minha-zainab-enterprises">
-                      <a className="hover:text-primary transition-colors">MINHA ZAINAB ENTERPRISES</a>
-                    </Link>
-                    <Link href="/category/haya-boutique">
-                      <a className="hover:text-primary transition-colors">HAYA BOUTIQUE</a>
-                    </Link>
-                    <Link href="/category/ayisha-silk-house">
-                      <a className="hover:text-primary transition-colors">AYISHA SILK HOUSE</a>
-                    </Link>
-                    <Link href="/category/todlerry">
-                      <a className="hover:text-primary transition-colors">TODLERRY</a>
-                    </Link>
-                    <Link href="/category/crescent-fashion">
-                      <a className="hover:text-primary transition-colors">CRESCENT FASHION</a>
-                    </Link>
-                    <Link href="/category/al-aiman-creation">
-                      <a className="hover:text-primary transition-colors">AL-AIMAN CREATION</a>
-                    </Link>
-                    <Link href="/category/girls-and-boys">
-                      <a className="hover:text-primary transition-colors">GIRL'S & BOY'S</a>
-                    </Link>
-                    <Link href="/category/general-shop">
-                      <a className="hover:text-primary transition-colors">General Shop</a>
-                    </Link>
+                    <Link href="/category/thaibah-enterprises" className="hover:text-primary transition-colors">THAIBAH ENTERPRISES</Link>
+                    <Link href="/category/minha-zainab-enterprises" className="hover:text-primary transition-colors">MINHA ZAINAB ENTERPRISES</Link>
+                    <Link href="/category/haya-boutique" className="hover:text-primary transition-colors">HAYA BOUTIQUE</Link>
+                    <Link href="/category/ayisha-silk-house" className="hover:text-primary transition-colors">AYISHA SILK HOUSE</Link>
+                    <Link href="/category/todlerry" className="hover:text-primary transition-colors">TODLERRY</Link>
+                    <Link href="/category/crescent-fashion" className="hover:text-primary transition-colors">CRESCENT FASHION</Link>
+                    <Link href="/category/al-aiman-creation" className="hover:text-primary transition-colors">AL-AIMAN CREATION</Link>
+                    <Link href="/category/girls-and-boys" className="hover:text-primary transition-colors">GIRL'S & BOY'S</Link>
+                    <Link href="/category/general-shop" className="hover:text-primary transition-colors">General Shop</Link>
                   </div>
                 </div>
-                <Link href="/cart">
-                  <a className="flex items-center gap-2 py-2 hover:text-primary transition-colors">
-                    <i className="bi bi-cart3"></i> Cart ({cartItemsCount})
-                  </a>
+                <Link href="/cart" className="flex items-center gap-2 py-2 hover:text-primary transition-colors">
+                  <i className="bi bi-cart3"></i> Cart ({cartItemsCount})
                 </Link>
                 <a href="#" className="flex items-center gap-2 py-2 hover:text-primary transition-colors">
                   <i className="bi bi-person"></i> Account
@@ -165,28 +148,28 @@ const Navbar = () => {
       <div className="bg-gray-100 py-2 border-t border-gray-200 hidden md:block">
         <div className="container mx-auto px-4">
           <ul className="flex items-center justify-center space-x-6 text-sm font-medium">
-            <li><Link href="/"><a className="hover:text-primary transition-colors">Home</a></Link></li>
-            <li><Link href="/category/all"><a className="hover:text-primary transition-colors">All Products</a></Link></li>
+            <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
+            <li><Link href="/category/all" className="hover:text-primary transition-colors">All Products</Link></li>
             <li className="group relative">
               <a href="#" className="flex items-center gap-1 hover:text-primary transition-colors">
                 Categories <i className="bi bi-chevron-down text-xs"></i>
               </a>
               <div className="absolute left-0 top-full bg-white shadow-lg rounded-b-lg p-4 w-64 hidden group-hover:block z-10">
                 <ul className="space-y-2 text-sm">
-                  <li><Link href="/category/thaibah-enterprises"><a className="block hover:text-primary transition-colors">THAIBAH ENTERPRISES</a></Link></li>
-                  <li><Link href="/category/minha-zainab-enterprises"><a className="block hover:text-primary transition-colors">MINHA ZAINAB ENTERPRISES</a></Link></li>
-                  <li><Link href="/category/haya-boutique"><a className="block hover:text-primary transition-colors">HAYA BOUTIQUE</a></Link></li>
-                  <li><Link href="/category/ayisha-silk-house"><a className="block hover:text-primary transition-colors">AYISHA SILK HOUSE</a></Link></li>
-                  <li><Link href="/category/todlerry"><a className="block hover:text-primary transition-colors">TODLERRY</a></Link></li>
-                  <li><Link href="/category/crescent-fashion"><a className="block hover:text-primary transition-colors">CRESCENT FASHION</a></Link></li>
-                  <li><Link href="/category/al-aiman-creation"><a className="block hover:text-primary transition-colors">AL-AIMAN CREATION</a></Link></li>
-                  <li><Link href="/category/girls-and-boys"><a className="block hover:text-primary transition-colors">GIRL'S & BOY'S</a></Link></li>
-                  <li><Link href="/category/general-shop"><a className="block hover:text-primary transition-colors">General Shop</a></Link></li>
+                  <li><Link href="/category/thaibah-enterprises" className="block hover:text-primary transition-colors">THAIBAH ENTERPRISES</Link></li>
+                  <li><Link href="/category/minha-zainab-enterprises" className="block hover:text-primary transition-colors">MINHA ZAINAB ENTERPRISES</Link></li>
+                  <li><Link href="/category/haya-boutique" className="block hover:text-primary transition-colors">HAYA BOUTIQUE</Link></li>
+                  <li><Link href="/category/ayisha-silk-house" className="block hover:text-primary transition-colors">AYISHA SILK HOUSE</Link></li>
+                  <li><Link href="/category/todlerry" className="block hover:text-primary transition-colors">TODLERRY</Link></li>
+                  <li><Link href="/category/crescent-fashion" className="block hover:text-primary transition-colors">CRESCENT FASHION</Link></li>
+                  <li><Link href="/category/al-aiman-creation" className="block hover:text-primary transition-colors">AL-AIMAN CREATION</Link></li>
+                  <li><Link href="/category/girls-and-boys" className="block hover:text-primary transition-colors">GIRL'S & BOY'S</Link></li>
+                  <li><Link href="/category/general-shop" className="block hover:text-primary transition-colors">General Shop</Link></li>
                 </ul>
               </div>
             </li>
-            <li><Link href="/category/new-arrivals"><a className="hover:text-primary transition-colors">New Arrivals</a></Link></li>
-            <li><Link href="/category/sale"><a className="hover:text-primary transition-colors">Sale</a></Link></li>
+            <li><Link href="/category/new-arrivals" className="hover:text-primary transition-colors">New Arrivals</Link></li>
+            <li><Link href="/category/sale" className="hover:text-primary transition-colors">Sale</Link></li>
             <li><a href="#" className="hover:text-primary transition-colors">About Us</a></li>
             <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
           </ul>
