@@ -12,9 +12,21 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const { toast } = useToast();
   
-  // Get cart context
-  const cartContext = useCart();
-  const { addToCart, isInitialized } = cartContext;
+  // Use try-catch to handle possible missing CartContext
+  let addToCart = (item: any) => {
+    toast({
+      title: "Cart Not Available",
+      description: "Could not add to cart. Please try again later.",
+      variant: "destructive",
+    });
+  };
+  
+  try {
+    const cartContext = useCart();
+    addToCart = cartContext.addToCart;
+  } catch (error) {
+    console.log("Cart context not available in ProductCard");
+  }
   const [isHovering, setIsHovering] = useState(false);
 
   const handleAddToCart = (e: React.MouseEvent) => {
