@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useRoute, useLocation } from "wouter";
+import { useRoute, useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useCart } from "../context/CartContext";
 import { useToast } from "@/hooks/use-toast";
@@ -11,8 +11,23 @@ const ProductDetail = () => {
   const [match, params] = useRoute("/product/:slug");
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  
+  // Use try-catch to handle possible missing CartContext
+  let addToCart = (item: any) => {
+    toast({
+      title: "Cart Not Available",
+      description: "Could not add to cart. Please try again later.",
+      variant: "destructive",
+    });
+  };
+  
+  try {
+    const cartContext = useCart();
+    addToCart = cartContext.addToCart;
+  } catch (error) {
+    console.log("Cart context not available in ProductDetail");
+  }
   const [selectedImage, setSelectedImage] = useState(0);
 
   const { data: product, isLoading, error } = useQuery<Product>({
@@ -115,13 +130,9 @@ const ProductDetail = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <div className="text-sm text-gray-500 mb-6">
-          <Link href="/">
-            <a className="hover:text-primary transition-colors">Home</a>
-          </Link>{" "}
+          <Link href="/" className="hover:text-primary transition-colors">Home</Link>{" "}
           /{" "}
-          <Link href={`/category/${product.categoryId}`}>
-            <a className="hover:text-primary transition-colors">Category</a>
-          </Link>{" "}
+          <Link href={`/category/${product.categoryId}`} className="hover:text-primary transition-colors">Category</Link>{" "}
           / {product.name}
         </div>
         
@@ -131,8 +142,8 @@ const ProductDetail = () => {
           <div className="md:w-1/2">
             <div className="bg-gray-100 rounded-lg overflow-hidden">
               <img 
-                src={product.images?.[selectedImage] || product.image} 
-                alt={product.name} 
+                src={(product.images && product.images[selectedImage]) || product.image || ''} 
+                alt={product.name || 'Product'} 
                 className="w-full h-96 object-contain"
               />
             </div>

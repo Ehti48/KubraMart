@@ -7,9 +7,28 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 
 const Cart = () => {
-  const { cart, removeFromCart, updateQuantity, clearCart, isLoading, cartTotal } = useCart();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  
+  // Use try-catch to handle possible missing CartContext
+  let cart: any[] = [];
+  let removeFromCart = (id: number) => {};
+  let updateQuantity = (id: number, quantity: number) => {};
+  let clearCart = async () => { return Promise.resolve(); };
+  let isLoading = false;
+  let cartTotal = 0;
+  
+  try {
+    const cartContext = useCart();
+    cart = cartContext.cart;
+    removeFromCart = cartContext.removeFromCart;
+    updateQuantity = cartContext.updateQuantity;
+    clearCart = cartContext.clearCart;
+    isLoading = cartContext.isLoading;
+    cartTotal = cartContext.cartTotal;
+  } catch (error) {
+    console.log("Cart context not available in Cart page");
+  }
   const [isClearing, setIsClearing] = useState(false);
 
   const handleClearCart = async () => {
